@@ -187,6 +187,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   color: var(--text-dim);
   animation: slideDown .25s var(--ease);
 }
+.searchbar[hidden] { display: none; }
 .searchbar input {
   flex: 1;
   border: none;
@@ -604,6 +605,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   box-shadow: var(--shadow-soft);
   animation: popIn .18s var(--ease);
 }
+.dropdown[hidden] { display: none; }
 .dropdown button {
   text-align: left;
   border: none;
@@ -627,6 +629,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   padding: 16px;
   animation: fadeIn .2s var(--ease);
 }
+.modal-overlay[hidden] { display: none; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 .modal {
@@ -752,40 +755,4 @@ kbd {
 @keyframes toastIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes toastOut { to { opacity: 0; transform: translateY(8px) scale(.96); } }
 
-/* ---------- Confetti ---------- */
-.confetti-canvas {
-  position: fixed; inset: 0;
-  pointer-events: none;
-  z-index: 90;
-}
-
-/* ---------- Loader ---------- */
-.loader {
-  position: fixed; inset: 0;
-  background: var(--bg);
-  display: grid; place-items: center;
-  z-index: 999;
-  color: var(--ember);
-  transition: opacity .4s var(--ease), visibility .4s;
-}
-.loader.is-hidden { opacity: 0; visibility: hidden; }
-.loader__flame { animation: flicker 1.2s ease-in-out infinite; }
-
-/* ---------- Misc animations ---------- */
-.habit-item.is-removing { animation: removeOut .25s var(--ease) forwards; }
-@keyframes removeOut { to { opacity: 0; transform: translateX(20px) scale(.96); height: 0; margin: 0; padding: 0; } }
-
-.habit-item.is-added { animation: addIn .3s var(--ease); }
-@keyframes addIn { from { opacity: 0; transform: translateY(-8px) scale(.97); } }
-
-.bump { animation: bump .35s var(--ease); }
-@keyframes bump { 0% { transform: scale(1); } 40% { transform: scale(1.15); } 100% { transform: scale(1); } }
-
-/* ---------- Responsive tweaks ---------- */
-@media (max-width: 600px) {
-  .hero { flex-direction: column; align-items: flex-start; gap: 18px; }
-  .hero__ring-wrap { align-self: center; }
-  .stat-row { grid-template-columns: 1fr 1fr; }
-  .stat-row .stat-card:nth-child(3) { grid-column: span 2; }
-  .app-shell { padding: 0 14px 100px; }
-}
+/* ---------- Confet
