@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#12141C" />
+  <meta name="description" content="Ritual — a premium offline habit tracker. Build streaks, earn XP, and keep your daily ledger." />
+  <title>Ritual · Habit Tracker</title>
+
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="assets/icon-192.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body data-theme="dark">
+
+  <!-- ============ APP SHELL ============ -->
+  <div class="app-shell">
+
+    <!-- ============ SIDEBAR / TOP NAV ============ -->
+    <nav class="nav" aria-label="Primary">
+      <div class="nav__brand">
+        <svg class="nav__flame" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 2c1 3-3 4-3 8a3 3 0 006 0c0-1-.5-2-1-2.5 1.5.5 3 2.5 3 5.5a5 5 0 01-10 0c0-4 2-5 2-8 0-1.5.5-2.5 3-3z" fill="currentColor"/>
+        </svg>
+        <span>Ritual</span>
+      </div>
+
+      <div class="nav__tabs" role="tablist">
+        <button class="nav__tab is-active" data-view="dashboard" role="tab" aria-selected="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" fill="currentColor"/></svg>
+          <span>Dashboard</span>
+        </button>
+        <button class="nav__tab" data-view="habits" role="tab" aria-selected="false">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 16.2l-3.5-3.5L4 14.2 9 19.2l11-11-1.5-1.4z" fill="currentColor"/></svg>
+          <span>Habits</span>
+        </button>
+        <button class="nav__tab" data-view="calendar" role="tab" aria-selected="false">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10z" fill="currentColor"/></svg>
+          <span>Calendar</span>
+        </button>
+        <button class="nav__tab" data-view="stats" role="tab" aria-selected="false">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 9.2h3V19H5V9.2zM10.6 5h2.8v14h-2.8V5zm5.6 8H19v6h-2.8v-6z" fill="currentColor"/></svg>
+          <span>Stats</span>
+        </button>
+      </div>
+
+      <div class="nav__actions">
+        <button class="icon-btn" id="searchToggle" aria-label="Search habits" title="Search (/)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 10-.7.7l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0A4.5 4.5 0 1114 9.5 4.5 4.5 0 019.5 14z" fill="currentColor"/></svg>
+        </button>
+        <button class="icon-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle theme (T)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" id="themeIcon"><path d="M12 3a9 9 0 109 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 01-4.4 2.26 5.403 5.403 0 01-3.14-9.8c-.44-.06-.9-.1-1.36-.1z" fill="currentColor"/></svg>
+        </button>
+        <button class="icon-btn" id="menuToggle" aria-label="More options" title="More">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="5" r="2" fill="currentColor"/><circle cx="12" cy="12" r="2" fill="currentColor"/><circle cx="12" cy="19" r="2" fill="currentColor"/></svg>
+        </button>
+      </div>
+    </nav>
+
+    <!-- ============ SEARCH BAR (collapsible) ============ -->
+    <div class="searchbar" id="searchBar" hidden>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 10-.7.7l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0A4.5 4.5 0 1114 9.5 4.5 4.5 0 019.5 14z" fill="currentColor"/></svg>
+      <input type="text" id="searchInput" placeholder="Search your habits…" autocomplete="off" />
+      <button class="searchbar__close" id="searchClose" aria-label="Close search">&times;</button>
+    </div>
+
+    <!-- ============ MAIN CONTENT ============ -->
+    <main class="main" id="main">
+
+      <!-- ===================== DASHBOARD VIEW ===================== -->
+      <section class="view is-active" id="view-dashboard" data-view="dashboard">
+
+        <header class="hero">
+          <div class="hero__text">
+            <p class="hero__date" id="heroDate">—</p>
+            <h1 class="hero__greeting" id="heroGreeting">Good morning.</h1>
+            <p class="hero__quote" id="heroQuote">Small steps, every day.</p>
+          </div>
+
+          <div class="hero__ring-wrap">
+            <svg class="ring" viewBox="0 0 160 160" width="160" height="160">
+              <circle class="ring__track" cx="80" cy="80" r="68" />
+              <circle class="ring__progress" id="ringProgress" cx="80" cy="80" r="68" />
+            </svg>
+            <div class="ring__label">
+              <span class="ring__pct" id="ringPct">0%</span>
+              <span class="ring__sub">today</span>
+            </div>
+          </div>
+        </header>
+
+        <div class="stat-row">
+          <div class="stat-card glass">
+            <div class="stat-card__icon flame-icon" id="flameIcon">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M12 2c1 3-3 4-3 8a3 3 0 006 0c0-1-.5-2-1-2.5 1.5.5 3 2.5 3 5.5a5 5 0 01-10 0c0-4 2-5 2-8 0-1.5.5-2.5 3-3z" fill="currentColor"/></svg>
+            </div>
+            <div>
+              <p class="stat-card__value" id="statStreak">0</p>
+              <p class="stat-card__label">Day streak</p>
+            </div>
+          </div>
+
+          <div class="stat-card glass">
+            <div class="stat-card__icon" style="color: var(--success)">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M9 16.2l-3.5-3.5L4 14.2 9 19.2l11-11-1.5-1.4z" fill="currentColor"/></svg>
+            </div>
+            <div>
+              <p class="stat-card__value" id="statCompleted">0</p>
+              <p class="stat-card__label">Completed total</p>
+            </div>
+          </div>
+
+          <div class="stat-card glass">
+            <div class="stat-card__icon" style="color: var(--xp)">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.27 5.82 21 7 14.14l-5-4.87 6.91-1.01L12 2z" fill="currentColor"/></svg>
+            </div>
+            <div>
+              <p class="stat-card__value" id="statLevel">Lvl 1</p>
+              <p class="stat-card__label" id="statXp">0 / 100 XP</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-row">
+          <section class="panel glass">
+            <div class="panel__head">
+              <h2>Today's ledger</h2>
+              <span class="panel__count" id="todayCount">0 of 0</span>
+            </div>
+            <ul class="habit-list" id="todayList" aria-live="polite"></ul>
+            <p class="empty-note" id="todayEmpty" hidden>No habits yet — tap + to add your first ritual.</p>
+          </section>
+
+          <section class="panel glass">
+            <div class="panel__head">
+              <h2>This week</h2>
+            </div>
+            <div class="tally" id="weekTally"></div>
+          </section>
+        </div>
+      </section>
+
+      <!-- ===================== HABITS VIEW ===================== -->
+      <section class="view" id="view-habits" data-view="habits">
+        <header class="view-head">
+          <h1>Your habits</h1>
+          <div class="filters">
+            <select id="filterCategory" class="select">
+              <option value="all">All categories</option>
+              <option value="Health">🩺 Health</option>
+              <option value="Study">📚 Study</option>
+              <option value="Fitness">💪 Fitness</option>
+              <option value="Work">💼 Work</option>
+              <option value="Reading">📖 Reading</option>
+              <option value="Finance">💰 Finance</option>
+              <option value="Personal">🌱 Personal</option>
+            </select>
+            <select id="filterStatus" class="select">
+              <option value="all">All</option>
+              <option value="pending">Pending</option>
+              <option value="completed">Completed</option>
+            </select>
+            <select id="sortBy" class="select">
+              <option value="default">Sort: Newest</option>
+              <option value="alpha">Sort: A–Z</option>
+              <option value="streak">Sort: Streak</option>
+            </select>
+          </div>
+        </header>
+        <ul class="habit-list habit-list--full" id="fullHabitList"></ul>
+        <p class="empty-note" id="fullHabitEmpty" hidden>Nothing here. Try clearing your filters, or add a new habit.</p>
+      </section>
+
+      <!-- ===================== CALENDAR VIEW ===================== -->
+      <section class="view" id="view-calendar" data-view="calendar">
+        <header class="view-head">
+          <h1>Calendar</h1>
+          <div class="cal-nav">
+            <button class="icon-btn" id="calPrev" aria-label="Previous month">&#8249;</button>
+            <span class="cal-nav__label" id="calLabel">—</span>
+            <button class="icon-btn" id="calNext" aria-label="Next month">&#8250;</button>
+          </div>
+        </header>
+        <div class="calendar glass" id="calendarGrid"></div>
+
+        <div class="day-detail glass" id="dayDetail" hidden>
+          <div class="panel__head">
+            <h2 id="dayDetailTitle">—</h2>
+            <button class="icon-btn" id="dayDetailClose" aria-label="Close">&times;</button>
+          </div>
+          <ul class="habit-list" id="dayDetailList"></ul>
+        </div>
+      </section>
+
+      <!-- ===================== STATS VIEW ===================== -->
+      <section class="view" id="view-stats" data-view="stats">
+        <header class="view-head">
+          <h1>Statistics</h1>
+        </header>
+
+        <div class="stat-row stat-row--four">
+          <div class="stat-card glass">
+            <p class="stat-card__value" id="statDayPct">0%</p>
+            <p class="stat-card__label">Today</p>
+          </div>
+          <div class="stat-card glass">
+            <p class="stat-card__value" id="statWeekPct">0%</p>
+            <p class="stat-card__label">This week</p>
+          </div>
+          <div class="stat-card glass">
+            <p class="stat-card__value" id="statMonthPct">0%</p>
+            <p class="stat-card__label">This month</p>
+          </div>
+          <div class="stat-card glass">
+            <p class="stat-card__value" id="statLongest">0</p>
+            <p class="stat-card__label">Longest streak</p>
+          </div>
+        </div>
+
+        <section class="panel glass">
+          <div class="panel__head"><h2>Last 14 days</h2></div>
+          <div class="chart" id="barChart"></div>
+        </section>
+
+        <section class="panel glass">
+          <div class="panel__head"><h2>By category</h2></div>
+          <div class="chart-donut" id="donutChart"></div>
+        </section>
+
+        <section class="panel glass">
+          <div class="panel__head"><h2>Achievements</h2></div>
+          <div class="badges" id="badgeGrid"></div>
+        </section>
+      </section>
+
+    </main>
+
+    <!-- ============ FLOATING ACTION BUTTON ============ -->
+    <button class="fab" id="fabAdd" aria-label="Add new habit" title="Add habit (N)">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6V5z" fill="currentColor"/></svg>
+    </button>
+
+    <!-- ============ MORE MENU ============ -->
+    <div class="dropdown" id="moreMenu" hidden>
+      <button data-action="export">Export data (.json)</button>
+      <button data-action="import">Import backup</button>
+      <button data-action="shortcuts">Keyboard shortcuts</button>
+      <button data-action="reset" class="dropdown__danger">Reset all data</button>
+    </div>
+    <input type="file" id="importInput" accept="application/json" hidden />
+
+  </div>
+
+  <!-- ============ HABIT FORM MODAL ============ -->
+  <div class="modal-overlay" id="habitModalOverlay" hidden>
+    <div class="modal glass" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal__head">
+        <h2 id="modalTitle">New habit</h2>
+        <button class="icon-btn" id="modalClose" aria-label="Close">&times;</button>
+      </div>
+
+      <form id="habitForm" class="habit-form">
+        <input type="hidden" id="habitId" />
+
+        <label class="field">
+          <span>Habit name</span>
+          <input type="text" id="habitName" placeholder="e.g. Drink 2L water" required maxlength="60" />
+        </label>
+
+        <div class="field-row">
+          <label class="field">
+            <span>Category</span>
+            <select id="habitCategory">
+              <option value="Health">🩺 Health</option>
+              <option value="Study">📚 Study</option>
+              <option value="Fitness">💪 Fitness</option>
+              <option value="Work">💼 Work</option>
+              <option value="Reading">📖 Reading</option>
+              <option value="Finance">💰 Finance</option>
+              <option value="Personal">🌱 Personal</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Frequency</span>
+            <select id="habitFrequency">
+              <option value="daily">Daily</option>
+              <option value="weekly">Weekly</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="field">
+          <span>Icon</span>
+          <div class="emoji-grid" id="emojiGrid"></div>
+        </div>
+
+        <div class="field">
+          <span>Color</span>
+          <div class="color-grid" id="colorGrid"></div>
+        </div>
+
+        <label class="field">
+          <span>Reminder time <em>(optional, stored only)</em></span>
+          <input type="time" id="habitReminder" />
+        </label>
+
+        <div class="modal__actions">
+          <button type="button" class="btn btn--ghost" id="habitDeleteBtn" hidden>Delete</button>
+          <button type="submit" class="btn btn--primary" id="habitSaveBtn">Save habit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ SHORTCUTS MODAL ============ -->
+  <div class="modal-overlay" id="shortcutsOverlay" hidden>
+    <div class="modal glass modal--small" role="dialog" aria-modal="true">
+      <div class="modal__head">
+        <h2>Keyboard shortcuts</h2>
+        <button class="icon-btn" id="shortcutsClose" aria-label="Close">&times;</button>
+      </div>
+      <ul class="shortcut-list">
+        <li><kbd>N</kbd><span>New habit</span></li>
+        <li><kbd>/</kbd><span>Search</span></li>
+        <li><kbd>T</kbd><span>Toggle theme</span></li>
+        <li><kbd>1</kbd>–<kbd>4</kbd><span>Switch views</span></li>
+        <li><kbd>Esc</kbd><span>Close dialog</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ============ TOAST CONTAINER ============ -->
+  <div class="toast-stack" id="toastStack" aria-live="polite"></div>
+
+  <!-- ============ CONFETTI CANVAS ============ -->
+  <canvas id="confettiCanvas" class="confetti-canvas"></canvas>
+
+  <!-- ============ LOADER ============ -->
+  <div class="loader" id="loader">
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" class="loader__flame"><path d="M12 2c1 3-3 4-3 8a3 3 0 006 0c0-1-.5-2-1-2.5 1.5.5 3 2.5 3 5.5a5 5 0 01-10 0c0-4 2-5 2-8 0-1.5.5-2.5 3-3z" fill="currentColor"/></svg>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
